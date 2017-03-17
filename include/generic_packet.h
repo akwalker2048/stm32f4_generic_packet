@@ -1,3 +1,6 @@
+#ifndef GENERIC_PACKET_H
+#define GENERIC_PACKET_H
+
 /* This code will be shared & compiled on both Linux based PC's and
  * STM32F4 ARM processors.  It should use standard C libraries and
  * struct use of stdint types so that it is portable.
@@ -21,8 +24,8 @@
 #define GP_LOC_PROJ_ID          1
 #define GP_LOC_PROJ_SPEC        2
 #define GP_LOC_NUM_BYTES        3
-#define GP_LOC_DATA_START       4
-#define GP_LOC_CS               5
+#define GP_LOC_CS               4
+#define GP_LOC_DATA_START       5
 #define GP_OVERHEAD_BYTES       6
 
 /* ************************************************************* */
@@ -33,12 +36,26 @@
 #define GP_MAX_PAYLOAD_LENGTH  (GP_MAX_PACKET_LENGTH - GP_OVERHEAD_BYTES)
 
 /* ************************************************************* */
+/* * Receive Packet States and Such                            * */
+/* ************************************************************* */
+typedef enum {GP_STATE_FIND_START,
+              GP_STATE_GET_PROJ_ID,
+              GP_STATE_GET_PROJ_SPEC,
+              GP_STATE_GET_NUM_BYTES,
+              GP_STATE_GET_CS,
+              GP_STATE_GET_DATA,
+              GP_STATE_CHECKSUM} GenericPacketState;
+
+typedef enum {GP_CONTROL_INITIALIZE, GP_CONTROL_RUN} GenericPacketStateControl;
+
+/* ************************************************************* */
 /* * Packet Structure                                          * */
 /* ************************************************************* */
 typedef struct {
    uint8_t data_index;
    uint8_t packet_length;
    uint8_t packet_error;
+   GenericPacketState gp_state;
    uint8_t gp[GP_MAX_PACKET_LENGTH];
 } GenericPacket;
 
@@ -63,10 +80,14 @@ typedef struct {
 /* ************************************************************* */
 /* * Function Error Codes                                      * */
 /* ************************************************************* */
-#define GP_SUCCESS                 0x00
-#define GP_ERROR_UNDEF             0x01
-#define GP_ERROR_CHECKSUM_MISMATCH 0x02
-#define GP_ERROR_PACKET_TOO_BIG    0x03
+#define GP_SUCCESS                       0x00
+#define GP_ERROR_UNDEF                   0x01
+#define GP_ERROR_CHECKSUM_MISMATCH       0x02
+#define GP_ERROR_PACKET_TOO_BIG          0x03
+#define GP_ERROR_READ_OUT_OF_RANGE       0x04
+#define GP_ERROR_DATA_INDEX_OUT_OF_RANGE 0x05
+#define GP_ERROR_UNDEFINED_PACKET_STATE  0x06
+
 
 
 /* ************************************************************* */
@@ -92,4 +113,6 @@ uint8_t gp_get_uint8(GenericPacket *packet, uint8_t *byte);
 uint8_t gp_get_uint16(GenericPacket *packet, uint16_t *chomp);
 uint8_t gp_get_uint32(GenericPacket *packet, uint32_t *word);
 uint8_t gp_get_float32(GenericPacket *packet, float *fpd);
+uint8_t gp_set_data_index(GenericPacket *packet, uint8_t data_index);
 
+#endif

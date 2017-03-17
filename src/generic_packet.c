@@ -14,19 +14,20 @@
 uint8_t gp_calc_checksum(GenericPacket *packet, uint8_t *cs)
 {
    uint8_t ii;
+   uint8_t lcs;
 
-
-   *cs = 0;
+   lcs = 0;
    for(ii=0; ii<packet->packet_length; ii++)
    {
       /* Note, the checksum byte itself is not included. */
       if(ii != GP_LOC_CS)
       {
-         *cs += packet[ii];
+         lcs += packet->gp[ii];
       }
    }
 
-   *cs = ~cs + 1;
+   lcs = ~lcs + 1;
+   *cs = lcs;
 
    return GP_SUCCESS;
 }
@@ -52,7 +53,7 @@ uint8_t gp_compare_checksum(GenericPacket *packet)
 
    if(packet->gp[GP_LOC_CS] != calc_cs)
    {
-      return GP_CHECKSUM_MISMATCH;
+      return GP_ERROR_CHECKSUM_MISMATCH;
    }
 
    return GP_SUCCESS;
@@ -88,6 +89,9 @@ uint8_t gp_add_checksum(GenericPacket *packet)
 /* * all the data away.  But that might also be less safe.  It * */
 /* * would assume that you would overwrite all of the old data * */
 /* * when filling the next packet.                             * */
+/* *                                                           * */
+/* * Note that you must reset a packet before either reading   * */
+/* * or creating a new one.                                    * */
 /* ************************************************************* */
 uint8_t gp_reset_packet(GenericPacket *packet)
 {
@@ -96,6 +100,7 @@ uint8_t gp_reset_packet(GenericPacket *packet)
    packet->data_index = 0;
    packet->packet_length = GP_OVERHEAD_BYTES;
    packet->packet_error = 0;
+   packet->gp_state = GP_STATE_FIND_START;
    for(ii=0; ii<GP_MAX_PACKET_LENGTH; ii++)
    {
       packet->gp[ii] = 0x00;
@@ -156,7 +161,7 @@ uint8_t gp_add_uint8(GenericPacket *packet, uint8_t byte)
       the max packet size.  Adding another byte would overrun the
       buffer...or in this case overwrite the first data element
       since we have capped it at uint8_t's. */
-   if((packet->data_index >= GP_MAX_PAYLOAD_LENGTH)||(packet->data_length >= GP_MAX_PACKET_LENGTH))
+   if((packet->data_index >= GP_MAX_PAYLOAD_LENGTH)||(packet->packet_length >= GP_MAX_PACKET_LENGTH))
    {
       packet->packet_error = GP_ERROR_PACKET_TOO_BIG;
       return packet->packet_error;
@@ -165,7 +170,7 @@ uint8_t gp_add_uint8(GenericPacket *packet, uint8_t byte)
    packet->gp[write_index] = byte;
 
    packet->data_index = packet->data_index + 1;
-   packet->data_length = packet->data_length + 1;
+   packet->packet_length = packet->packet_length + 1;
 
 
 
@@ -263,3 +268,132 @@ uint8_t gp_add_float32(GenericPacket *packet, float fpd)
    return GP_SUCCESS;
 }
 
+/* ************************************************************* */
+/* * gp_get_uint8                                              * */
+/* ************************************************************* */
+/* * This function will read the next byte in the packet based * */
+/* * on the data_index.  It will then point the index to the   * */
+/* * next byte to be read.  This works as long as you read out * */
+/* * the whole packet when it is received.  You will need to   * */
+/* * manually set the index using the gp_set_data_index()      * */
+/* * function if you wish to read chunks out of order.         * */
+/* ************************************************************* */
+uint8_t gp_get_uint8(GenericPacket *packet, uint8_t *byte)
+{
+
+   uint8_t read_index;
+
+   read_index = GP_OVERHEAD_BYTES + packet->data_index;
+
+   if(read_index >= (packet->gp[GP_LOC_NUM_BYTES] + GP_OVERHEAD_BYTES))
+   {
+      return GP_ERROR_READ_OUT_OF_RANGE;
+   }
+   if(packet->data_index >= GP_MAX_PAYLOAD_LENGTH)
+   {
+      return GP_ERROR_READ_OUT_OF_RANGE;
+   }
+
+   *byte = packet->gp[read_index];
+   packet->data_index = packet->data_index + 1;
+
+   return GP_SUCCESS;
+}
+
+/* ************************************************************* */
+/* * gp_get_uint16                                             * */
+/* ************************************************************* */
+uint8_t gp_get_uint16(GenericPacket *packet, uint16_t *chomp)
+{
+   uint8_t retval;
+   uint8_t big, little;
+
+   retval = gp_get_uint8(packet, &little);
+   if(retval != GP_SUCCESS)
+   {
+      return retval;
+   }
+
+   retval = gp_get_uint8(packet, &big);
+   if(retval != GP_SUCCESS)
+   {
+      return retval;
+   }
+
+   *chomp = ((uint16_t)big<<8) + little;
+
+   return GP_SUCCESS;
+}
+
+/* ************************************************************* */
+/* * gp_get_uint32                                             * */
+/* ************************************************************* */
+uint8_t gp_get_uint32(GenericPacket *packet, uint32_t *word)
+{
+   uint8_t retval;
+   uint8_t little, big, bigger, biggest;
+
+   retval = gp_get_uint8(packet, &little);
+   if(retval != GP_SUCCESS)
+   {
+      return retval;
+   }
+
+   retval = gp_get_uint8(packet, &big);
+   if(retval != GP_SUCCESS)
+   {
+      return retval;
+   }
+
+   retval = gp_get_uint8(packet, &bigger);
+   if(retval != GP_SUCCESS)
+   {
+      return retval;
+   }
+
+   retval = gp_get_uint8(packet, &biggest);
+   if(retval != GP_SUCCESS)
+   {
+      return retval;
+   }
+
+
+   *word = ((uint32_t)biggest<<24) + ((uint32_t)bigger<<16) + ((uint32_t)big<<8) + little;
+
+   return GP_SUCCESS;
+}
+
+/* ************************************************************* */
+/* * gp_get_float32                                            * */
+/* ************************************************************* */
+uint8_t gp_get_float32(GenericPacket *packet, float *fpd)
+{
+   uint8_t retval;
+   uint32_t word;
+
+   retval = gp_get_uint32(packet, &word);
+   if(retval != GP_SUCCESS)
+   {
+      return retval;
+   }
+
+   *fpd = (float)word;
+
+   return GP_SUCCESS;
+}
+
+/* ************************************************************* */
+/* * gp_set_data_index                                         * */
+/* ************************************************************* */
+uint8_t gp_set_data_index(GenericPacket *packet, uint8_t data_index)
+{
+   if((data_index >= (packet->gp[GP_LOC_NUM_BYTES] - 1)) || (packet->gp[GP_LOC_NUM_BYTES] == 0))
+   {
+      return GP_ERROR_DATA_INDEX_OUT_OF_RANGE;
+   }
+
+   packet->data_index = data_index;
+
+   return GP_SUCCESS;
+
+}
