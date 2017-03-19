@@ -20,6 +20,22 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
    {
       switch(gp_packet->gp_state)
       {
+         case GP_STATE_INITIALIZE:
+            retval = gp_reset_packet(gp_packet);
+            if(retval != GP_SUCCESS)
+            {
+               return retval;
+            }
+            if(byte == GP_START_BYTE)
+            {
+               gp_packet->gp[GP_LOC_START_BYTE] = byte;
+               gp_packet->gp_state = GP_STATE_GET_PROJ_ID;
+            }
+            else
+            {
+               gp_packet->gp_state = GP_STATE_FIND_START;
+            }
+            break;
          case GP_STATE_FIND_START:
             if(byte == GP_START_BYTE)
             {
@@ -57,10 +73,18 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
             if(gp_packet->data_index >= gp_packet->gp[GP_LOC_NUM_BYTES])
             {
                retval = gp_compare_checksum(gp_packet);
-               gp_packet->gp_state = GP_STATE_FIND_START;
+               gp_packet->gp_state = GP_STATE_INITIALIZE;
                return retval;
             }
+            if(gp_packet->data_index >= GP_MAX_PAYLOAD_LENGTH)
+            {
+
+            }
             break;
+         case GP_STATE_CHECKSUM:
+            {
+
+            }
          default:
             return GP_ERROR_UNDEFINED_PACKET_STATE;
             break;

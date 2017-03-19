@@ -38,7 +38,8 @@
 /* ************************************************************* */
 /* * Receive Packet States and Such                            * */
 /* ************************************************************* */
-typedef enum {GP_STATE_FIND_START,
+typedef enum {GP_STATE_INITIALIZE,
+              GP_STATE_FIND_START,
               GP_STATE_GET_PROJ_ID,
               GP_STATE_GET_PROJ_SPEC,
               GP_STATE_GET_NUM_BYTES,
