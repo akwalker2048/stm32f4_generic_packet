@@ -61,6 +61,14 @@ typedef struct {
 } GenericPacket;
 
 /* ************************************************************* */
+/* * Float Conversion Union                                    * */
+/* ************************************************************* */
+typedef union {
+   float fval;
+   uint32_t ival;
+} FloatConv;
+
+/* ************************************************************* */
 /* * Project IDs                                               * */
 /* ************************************************************* */
 /* * These are major projects...sub packets can be defined     * */
@@ -79,15 +87,16 @@ typedef struct {
 #define GP_PROJ_MOTOR_BRUSH    0x09
 
 /* ************************************************************* */
-/* * Function Error Codes                                      * */
+/* * Function Return Codes                                      * */
 /* ************************************************************* */
 #define GP_SUCCESS                       0x00
 #define GP_ERROR_UNDEF                   0x01
 #define GP_ERROR_CHECKSUM_MISMATCH       0x02
-#define GP_ERROR_PACKET_TOO_BIG          0x03
-#define GP_ERROR_READ_OUT_OF_RANGE       0x04
-#define GP_ERROR_DATA_INDEX_OUT_OF_RANGE 0x05
-#define GP_ERROR_UNDEFINED_PACKET_STATE  0x06
+#define GP_CHECKSUM_MATCH                0x03
+#define GP_ERROR_PACKET_TOO_BIG          0x04
+#define GP_ERROR_READ_OUT_OF_RANGE       0x05
+#define GP_ERROR_DATA_INDEX_OUT_OF_RANGE 0x06
+#define GP_ERROR_UNDEFINED_PACKET_STATE  0x07
 
 
 

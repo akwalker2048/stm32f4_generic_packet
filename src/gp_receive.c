@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "generic_packet.h"
 #include "gp_receive.h"
 
@@ -10,14 +12,20 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
       retval = gp_reset_packet(gp_packet);
       if(retval != GP_SUCCESS)
       {
+         printf("retval = %u\n", retval);
          return retval;
       }
       gp_packet->gp_state = GP_STATE_FIND_START;
-      gpsc == GP_CONTROL_RUN;
+      gpsc = GP_CONTROL_RUN;
    }
 
    if(gpsc == GP_CONTROL_RUN)
    {
+
+      printf("byte:  %u\t0x%2X\n", byte, byte);
+      printf("gp_packet->gp_state = %u\n", gp_packet->gp_state);
+
+
       switch(gp_packet->gp_state)
       {
          case GP_STATE_INITIALIZE:
@@ -30,6 +38,7 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
             {
                gp_packet->gp[GP_LOC_START_BYTE] = byte;
                gp_packet->gp_state = GP_STATE_GET_PROJ_ID;
+               printf("Go get project ID!\n");
             }
             else
             {
@@ -53,10 +62,12 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
             break;
          case GP_STATE_GET_NUM_BYTES:
             gp_packet->gp[GP_LOC_NUM_BYTES] = byte;
+            gp_packet->packet_length = byte + GP_OVERHEAD_BYTES;
             gp_packet->gp_state = GP_STATE_GET_CS;
             break;
          case GP_STATE_GET_CS:
             gp_packet->gp[GP_LOC_CS] = byte;
+            printf("Expecting %u bytes!\n", gp_packet->gp[GP_LOC_NUM_BYTES]);
             if(gp_packet->gp[GP_LOC_NUM_BYTES] != 0)
             {
                gp_packet->data_index = 0;
@@ -64,7 +75,16 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
             }
             else
             {
-               gp_packet->gp_state = GP_STATE_CHECKSUM;
+               retval = gp_compare_checksum(gp_packet);
+               gp_packet->gp_state = GP_STATE_INITIALIZE;
+               if(retval == GP_SUCCESS)
+               {
+                  return GP_CHECKSUM_MATCH;
+               }
+               else
+               {
+                  return retval;
+               }
             }
             break;
          case GP_STATE_GET_DATA:
@@ -74,21 +94,27 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
             {
                retval = gp_compare_checksum(gp_packet);
                gp_packet->gp_state = GP_STATE_INITIALIZE;
-               return retval;
+               if(retval == GP_SUCCESS)
+               {
+                  return GP_CHECKSUM_MATCH;
+               }
+               else
+               {
+                  return retval;
+               }
             }
             if(gp_packet->data_index >= GP_MAX_PAYLOAD_LENGTH)
             {
-
+               gp_packet->gp_state = GP_STATE_INITIALIZE;
+               return GP_ERROR_PACKET_TOO_BIG;
             }
             break;
-         case GP_STATE_CHECKSUM:
-            {
-
-            }
          default:
             return GP_ERROR_UNDEFINED_PACKET_STATE;
             break;
       }
    }
+
+   return GP_SUCCESS;
 
 }

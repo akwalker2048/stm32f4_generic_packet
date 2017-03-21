@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 
 #include "generic_packet.h"
 
@@ -53,6 +54,7 @@ uint8_t gp_compare_checksum(GenericPacket *packet)
 
    if(packet->gp[GP_LOC_CS] != calc_cs)
    {
+      printf("Checksum...Expected %u...Got %u\n", packet->gp[GP_LOC_CS], calc_cs);
       return GP_ERROR_CHECKSUM_MISMATCH;
    }
 
@@ -172,7 +174,7 @@ uint8_t gp_add_uint8(GenericPacket *packet, uint8_t byte)
    packet->data_index = packet->data_index + 1;
    packet->packet_length = packet->packet_length + 1;
 
-
+   packet->gp[GP_LOC_NUM_BYTES] = packet->data_index;
 
    return GP_SUCCESS;
 }
@@ -255,11 +257,13 @@ uint8_t gp_add_uint32(GenericPacket *packet, uint32_t word)
 uint8_t gp_add_float32(GenericPacket *packet, float fpd)
 {
    uint8_t retval;
-   uint32_t word;
+   FloatConv fc;
 
-   word = (uint32_t)fpd;
+   fc.fval = fpd;
 
-   retval = gp_add_uint32(packet, word);
+   printf("gp_add_float32\t%g\t%u\n", fc.fval, fc.ival);
+
+   retval = gp_add_uint32(packet, fc.ival);
    if(retval != GP_SUCCESS)
    {
       return retval;
@@ -369,15 +373,15 @@ uint8_t gp_get_uint32(GenericPacket *packet, uint32_t *word)
 uint8_t gp_get_float32(GenericPacket *packet, float *fpd)
 {
    uint8_t retval;
-   uint32_t word;
+   FloatConv fc;
 
-   retval = gp_get_uint32(packet, &word);
+   retval = gp_get_uint32(packet, &fc.ival);
    if(retval != GP_SUCCESS)
    {
       return retval;
    }
 
-   *fpd = (float)word;
+   *fpd = fc.fval;
 
    return GP_SUCCESS;
 }
