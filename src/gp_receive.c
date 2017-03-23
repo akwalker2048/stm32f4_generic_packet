@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "generic_packet.h"
 #include "gp_receive.h"
 
@@ -12,7 +10,9 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
       retval = gp_reset_packet(gp_packet);
       if(retval != GP_SUCCESS)
       {
-         printf("retval = %u\n", retval);
+#ifdef PC_DEBUG_ON
+         /* printf("retval = %u\n", retval); */
+#endif
          return retval;
       }
       gp_packet->gp_state = GP_STATE_FIND_START;
@@ -21,10 +21,10 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
 
    if(gpsc == GP_CONTROL_RUN)
    {
-
-      printf("byte:  %u\t0x%2X\n", byte, byte);
-      printf("gp_packet->gp_state = %u\n", gp_packet->gp_state);
-
+#ifdef PC_DEBUG_ON
+      /* printf("byte:  %u\t0x%2X\n", byte, byte); */
+      /* printf("gp_packet->gp_state = %u\n", gp_packet->gp_state); */
+#endif
 
       switch(gp_packet->gp_state)
       {
@@ -38,7 +38,9 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
             {
                gp_packet->gp[GP_LOC_START_BYTE] = byte;
                gp_packet->gp_state = GP_STATE_GET_PROJ_ID;
-               printf("Go get project ID!\n");
+#ifdef PC_DEBUG_ON
+               /* printf("Go get project ID!\n"); */
+#endif
             }
             else
             {
@@ -67,7 +69,9 @@ uint8_t gp_receive_byte(uint8_t byte, GenericPacketStateControl gpsc, GenericPac
             break;
          case GP_STATE_GET_CS:
             gp_packet->gp[GP_LOC_CS] = byte;
-            printf("Expecting %u bytes!\n", gp_packet->gp[GP_LOC_NUM_BYTES]);
+#ifdef PC_DEBUG_ON
+            /* printf("Expecting %u bytes!\n", gp_packet->gp[GP_LOC_NUM_BYTES]); */
+#endif
             if(gp_packet->gp[GP_LOC_NUM_BYTES] != 0)
             {
                gp_packet->data_index = 0;

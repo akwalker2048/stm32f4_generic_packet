@@ -17,6 +17,14 @@
  * application.
  */
 
+/* The microcontroller can't handle the printf debug capability that
+ * is OK on the PC.  Set the PC_DEBUG_ON compiler directive to allow
+ * printf's.
+ */
+#ifdef PC_DEBUG_ON
+#include <stdio.h>
+#endif
+
 /* ************************************************************* */
 /* * Packet Structure                                          * */
 /* ************************************************************* */
@@ -97,7 +105,7 @@ typedef union {
 #define GP_ERROR_READ_OUT_OF_RANGE       0x05
 #define GP_ERROR_DATA_INDEX_OUT_OF_RANGE 0x06
 #define GP_ERROR_UNDEFINED_PACKET_STATE  0x07
-
+#define GP_ERROR_ILL_FORMED_PACKET       0x08
 
 
 /* ************************************************************* */
@@ -124,5 +132,7 @@ uint8_t gp_get_uint16(GenericPacket *packet, uint16_t *chomp);
 uint8_t gp_get_uint32(GenericPacket *packet, uint32_t *word);
 uint8_t gp_get_float32(GenericPacket *packet, float *fpd);
 uint8_t gp_set_data_index(GenericPacket *packet, uint8_t data_index);
+
+uint8_t gp_copy_packet(GenericPacket orig, GenericPacket *copy);
 
 #endif

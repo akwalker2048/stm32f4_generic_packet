@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <stdio.h>
 
 #include "generic_packet.h"
 
@@ -54,7 +53,9 @@ uint8_t gp_compare_checksum(GenericPacket *packet)
 
    if(packet->gp[GP_LOC_CS] != calc_cs)
    {
+#ifdef PC_DEBUG_ON
       printf("Checksum...Expected %u...Got %u\n", packet->gp[GP_LOC_CS], calc_cs);
+#endif
       return GP_ERROR_CHECKSUM_MISMATCH;
    }
 
@@ -261,7 +262,9 @@ uint8_t gp_add_float32(GenericPacket *packet, float fpd)
 
    fc.fval = fpd;
 
+#ifdef PC_DEBUG_ON
    printf("gp_add_float32\t%g\t%u\n", fc.fval, fc.ival);
+#endif
 
    retval = gp_add_uint32(packet, fc.ival);
    if(retval != GP_SUCCESS)
@@ -397,6 +400,26 @@ uint8_t gp_set_data_index(GenericPacket *packet, uint8_t data_index)
    }
 
    packet->data_index = data_index;
+
+   return GP_SUCCESS;
+
+}
+
+/* ************************************************************* */
+/* * gp_copy_packet                                            * */
+/* ************************************************************* */
+uint8_t gp_copy_packet(GenericPacket orig, GenericPacket *copy)
+{
+   uint8_t ii;
+
+   copy->data_index = 0;
+   copy->packet_length = orig.packet_length;
+   copy->packet_error = orig.packet_error;
+   copy->gp_state = orig.gp_state;
+   for(ii=0; ii<GP_MAX_PACKET_LENGTH; ii++)
+   {
+      copy->gp[ii] = orig.gp[ii];
+   }
 
    return GP_SUCCESS;
 
