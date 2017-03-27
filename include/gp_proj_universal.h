@@ -12,6 +12,7 @@
 #define UNIVERSAL_CHOMP       0x05
 #define UNIVERSAL_WORD        0x06
 #define UNIVERSAL_FLOAT       0x07
+#define UNIVERSAL_CODE_VER    0x08
 
 uint8_t create_universal_test_packet(GenericPacket *packet, uint8_t byte, uint16_t chomp, uint32_t word, float fp);
 uint8_t extract_universal_test_packet(GenericPacket *packet, uint8_t *byte, uint16_t *chomp, uint32_t *word, float *fp);
@@ -22,6 +23,7 @@ uint8_t extract_universal_timestamp(GenericPacket *packet, uint32_t *timestamp);
 uint8_t create_universal_ack(GenericPacket *packet);
 uint8_t extract_universal_ack(GenericPacket *packet);
 
-
+uint8_t create_universal_code_ver(GenericPacket *packet, char *codever);
+uint8_t extract_universal_code_ver(GenericPacket *packet, char *codever);
 
 #endif

@@ -19,7 +19,8 @@ VPATH = ../src
 
 CFLAGS  =  -I. -I../include \
 	-c -fno-common -O2 -g  \
-	$(LOCAL_CFLAGS)
+	$(LOCAL_CFLAGS) \
+	-DGIT_REVISION='"generic-stm32f4-0-g8344b9d-14"'
 LFLAGS  =
 LFLAGS_END =
 CPFLAGS = -Obinary

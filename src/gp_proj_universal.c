@@ -1,3 +1,4 @@
+#include <string.h>
 #include "generic_packet.h"
 #include "gp_proj_universal.h"
 
@@ -70,7 +71,7 @@ uint8_t create_universal_ack(GenericPacket *packet)
    /*   2.  Add header information.  */
    gp_add_proj(packet, GP_PROJ_UNIVERSAL, UNIVERSAL_ACK);
    /*   No data needed.  The "UNIVERSAL_ACK" is all we need.
-   /*   3.  Add the checksum so that we are ready to "send". */
+        /*   3.  Add the checksum so that we are ready to "send". */
    gp_add_checksum(packet);
 
    return GP_SUCCESS;
@@ -79,6 +80,63 @@ uint8_t create_universal_ack(GenericPacket *packet)
 
 uint8_t extract_universal_ack(GenericPacket *packet)
 {
+
+   return GP_SUCCESS;
+}
+
+uint8_t create_universal_code_ver(GenericPacket *packet, char *codever)
+{
+   uint8_t ii;
+   size_t len;
+
+   /*   1.  Reset so we are starting with a fresh packet. */
+   gp_reset_packet(packet);
+   /*   2.  Add header information.  */
+   gp_add_proj(packet, GP_PROJ_UNIVERSAL, UNIVERSAL_CODE_VER);
+   /*   3.  Add code version string. */
+   /* len = strlen(codever); */
+   len = 0;
+   do{
+      len++;
+   }while((codever[len] != '\0')&&(len<255));
+
+   if(len > GP_MAX_PAYLOAD_LENGTH)
+   {
+      len = GP_MAX_PAYLOAD_LENGTH;
+   }
+
+   for(ii=0; ii<len; ii++)
+   {
+      gp_add_uint8(packet, (uint8_t)codever[ii]);
+   }
+
+   /*   No data needed.  The "UNIVERSAL_ACK" is all we need.
+        /*   4.  Add the checksum so that we are ready to "send". */
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+}
+
+uint8_t extract_universal_code_ver(GenericPacket *packet, char *codever)
+{
+
+   uint8_t len;
+   uint8_t ii;
+
+   /* Note:  The variable codever must already be allocated to a size of 256 bytes. */
+   gp_set_data_index(packet, 0);
+   /* How many bites are in the string? */
+   len = packet->gp[GP_LOC_NUM_BYTES];
+   if(len > GP_MAX_PAYLOAD_LENGTH)
+   {
+      len = GP_MAX_PAYLOAD_LENGTH;
+   }
+
+   for(ii=0; ii<len; ii++)
+   {
+      gp_get_uint8(packet, &(codever[ii]));
+   }
+   codever[len] = '\0';
 
    return GP_SUCCESS;
 }
