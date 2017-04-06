@@ -3,7 +3,7 @@
 
 #include "generic_packet.h"
 
-/* List of packet types */
+/* List of universal packet types. */
 #define UNIVERSAL_TEST_PACKET 0x00
 #define UNIVERSAL_TIMESTAMP   0x01
 #define UNIVERSAL_ACK         0x02
