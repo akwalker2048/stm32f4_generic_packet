@@ -142,31 +142,102 @@ uint16_t vospi_crc_calculator(VOSPIFrame *frame)
 
 }
 
-/* /\* Example CRC Code for 16 bit CRC *\/ */
-/* public static ushort Compute_CRC16_Simple(byte[] bytes) */
-/* { */
-/*     const ushort generator = 0x1021;	/\* divisor is 16bit *\/ */
-/*     ushort crc = 0; /\* CRC value is 16bit *\/ */
 
-/*     foreach (byte b in bytes) */
-/*     { */
-/*         crc ^= (ushort(b << 8); /\* move byte into MSB of 16bit CRC *\/ */
+uint8_t create_thermal_begin_lepton_image(GenericPacket *packet, uint16_t image_num, uint32_t time_ms)
+{
+   uint8_t ii;
 
-/*         for (int i = 0; i < 8; i++) */
-/*         { */
-/*             if ((crc & 0x8000) != 0) /\* test for MSB = bit 15 *\/ */
-/*             { */
-/*                 crc = (ushort((crc << 1) ^ generator); */
-/*             } */
-/*             else */
-/*             { */
-/*                 crc <<= 1; */
-/*             } */
-/*         } */
-/*     } */
+   /* Build a test packet. */
+   /*   1.  Reset so we are starting with a fresh packet. */
+   gp_reset_packet(packet);
+   /*   2.  Add header information.  */
+   gp_add_proj(packet, GP_PROJ_THERMAL, THERMAL_BEGIN_LEPTON_IMAGE);
+   /*   3.  Add data. */
+   gp_add_uint16(packet, image_num);
+   gp_add_uint32(packet, time_ms);
+   /*   4.  Add the checksum so that we are ready to "send". */
+   gp_add_checksum(packet);
 
-/*     return crc; */
-/* } */
+   return GP_SUCCESS;
+}
+
+uint8_t extract_thermal_begin_lepton_image(GenericPacket *packet, uint16_t *image_num, uint32_t *time_ms)
+{
+
+   gp_set_data_index(packet, 0);
+   gp_get_uint16(packet, image_num);
+   gp_get_uint32(packet, time_ms);
+
+   return GP_SUCCESS;
+}
+
+uint8_t create_thermal_end_lepton_image(GenericPacket *packet)
+{
+
+   /* Build a test packet. */
+   /*   1.  Reset so we are starting with a fresh packet. */
+   gp_reset_packet(packet);
+   /*   2.  Add header information.  */
+   gp_add_proj(packet, GP_PROJ_THERMAL, THERMAL_END_LEPTON_IMAGE);
+   /*   3.  No data to add. */
+   /*   4.  Add the checksum so that we are ready to "send". */
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+}
+
+uint8_t extract_thermal_end_lepton_image(GenericPacket *packet)
+{
+
+   /* Nothing to do here.  Other than declare success because we got the packet. */
+
+   return GP_SUCCESS;
+}
 
 
+uint8_t create_thermal_image_timeout(GenericPacket *packet)
+{
 
+   /* Build a test packet. */
+   /*   1.  Reset so we are starting with a fresh packet. */
+   gp_reset_packet(packet);
+   /*   2.  Add header information.  */
+   gp_add_proj(packet, GP_PROJ_THERMAL, THERMAL_IMAGE_TIMEOUT);
+   /*   3.  No data to add. */
+   /*   4.  Add the checksum so that we are ready to "send". */
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+}
+
+uint8_t extract_thermal_image_timeout(GenericPacket *packet)
+{
+
+   /* Nothing to do here.  Other than declare success because we got the packet. */
+
+   return GP_SUCCESS;
+}
+
+
+uint8_t create_thermal_cmd_grab_image(GenericPacket *packet)
+{
+
+   /* Build a test packet. */
+   /*   1.  Reset so we are starting with a fresh packet. */
+   gp_reset_packet(packet);
+   /*   2.  Add header information.  */
+   gp_add_proj(packet, GP_PROJ_THERMAL, THERMAL_CMD_GRAB_IMAGE);
+   /*   3.  No data to add. */
+   /*   4.  Add the checksum so that we are ready to "send". */
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+}
+
+uint8_t extract_thermal_cmd_grab_image(GenericPacket *packet)
+{
+
+   /* Nothing to do here.  Other than declare success because we got the packet. */
+
+   return GP_SUCCESS;
+}
