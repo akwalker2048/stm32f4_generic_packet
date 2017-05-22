@@ -68,6 +68,8 @@ typedef struct {
    uint8_t gp[GP_MAX_PACKET_LENGTH];
 } GenericPacket;
 
+
+
 /* ************************************************************* */
 /* * Float Conversion Union                                    * */
 /* ************************************************************* */
@@ -90,9 +92,8 @@ typedef union {
 #define GP_PROJ_THERMAL        0x04
 #define GP_PROJ_SONAR          0x05
 #define GP_PROJ_CAMERA         0x06
-#define GP_PROJ_MOTOR_BLDC     0x07
-#define GP_PROJ_MOTOR_STEPPER  0x08
-#define GP_PROJ_MOTOR_BRUSH    0x09
+#define GP_PROJ_MOTOR          0x07
+#define GP_PROJ_RS485_SB       0x08
 
 /* ************************************************************* */
 /* * Function Return Codes                                      * */
@@ -134,5 +135,7 @@ uint8_t gp_get_float32(GenericPacket *packet, float *fpd);
 uint8_t gp_set_data_index(GenericPacket *packet, uint8_t data_index);
 
 uint8_t gp_copy_packet(GenericPacket orig, GenericPacket *copy);
+
+uint8_t gp_print_packet(GenericPacket packet);
 
 #endif

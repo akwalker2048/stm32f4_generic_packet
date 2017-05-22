@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+
 #include "generic_packet.h"
 
 
@@ -424,3 +425,26 @@ uint8_t gp_copy_packet(GenericPacket orig, GenericPacket *copy)
    return GP_SUCCESS;
 
 }
+
+#ifdef PC_DEBUG_ON
+/* ************************************************************* */
+/* * gp_print_packet                                           * */
+/* ************************************************************* */
+uint8_t gp_print_packet(GenericPacket packet)
+{
+   uint8_t ii;
+
+   printf("GP_LOC_START_BYTE:\t0x%X\n", packet.gp[GP_LOC_START_BYTE]);
+   printf("GP_LOC_PROJ_ID:\t0x%X\n", packet.gp[GP_LOC_PROJ_ID]);
+   printf("GP_LOC_PROJ_SPEC:\t0x%X\n", packet.gp[GP_LOC_PROJ_SPEC]);
+   printf("GP_LOC_NUM_BYTES:\t0x%X\n", packet.gp[GP_LOC_NUM_BYTES]);
+   printf("GP_LOC_CS:\t0x%X\n", packet.gp[GP_LOC_CS]);
+   for(ii=0; ii<packet.gp[GP_LOC_NUM_BYTES]; ii++)
+   {
+      printf("DATA[ii]:\t0x%X\n", packet.gp[GP_LOC_DATA_START+ii]);
+   }
+
+   return GP_SUCCESS;
+
+}
+#endif

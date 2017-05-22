@@ -29,4 +29,11 @@ uint8_t extract_universal_code_ver(GenericPacket *packet, char *codever);
 uint8_t create_universal_str(GenericPacket *packet, char *str);
 uint8_t extract_universal_string(GenericPacket *packet, char *str);
 
+uint8_t create_universal_word(GenericPacket *packet, uint32_t word);
+uint8_t extract_universal_word(GenericPacket *packet, uint32_t *word);
+
+uint8_t create_universal_float(GenericPacket *packet, float flt);
+uint8_t extract_universal_float(GenericPacket *packet, float *flt);
+
+
 #endif

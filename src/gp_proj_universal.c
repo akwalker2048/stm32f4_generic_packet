@@ -63,6 +63,9 @@ uint8_t extract_universal_timestamp(GenericPacket *packet, uint32_t *timestamp)
    return GP_SUCCESS;
 }
 
+
+
+
 uint8_t create_universal_ack(GenericPacket *packet)
 {
 
@@ -193,6 +196,59 @@ uint8_t extract_universal_string(GenericPacket *packet, char *str)
       gp_get_uint8(packet, &(str[ii]));
    }
    str[len] = '\0';
+
+   return GP_SUCCESS;
+}
+
+uint8_t create_universal_word(GenericPacket *packet, uint32_t word)
+{
+
+   /*   1.  Reset so we are starting with a fresh packet. */
+   gp_reset_packet(packet);
+   /*   2.  Add header information.  */
+   gp_add_proj(packet, GP_PROJ_UNIVERSAL, UNIVERSAL_WORD);
+   /*   3.  Add data of all types. */
+   gp_add_uint32(packet, word);
+   /*   4.  Add the checksum so that we are ready to "send". */
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+
+}
+
+uint8_t extract_universal_word(GenericPacket *packet, uint32_t *word)
+{
+
+   gp_set_data_index(packet, 0);
+   gp_get_uint32(packet, word);
+
+   return GP_SUCCESS;
+}
+
+
+
+
+uint8_t create_universal_float(GenericPacket *packet, float flt)
+{
+
+   /*   1.  Reset so we are starting with a fresh packet. */
+   gp_reset_packet(packet);
+   /*   2.  Add header information.  */
+   gp_add_proj(packet, GP_PROJ_UNIVERSAL, UNIVERSAL_FLOAT);
+   /*   3.  Add data of all types. */
+   gp_add_float32(packet, flt);
+   /*   4.  Add the checksum so that we are ready to "send". */
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+
+}
+
+uint8_t extract_universal_float(GenericPacket *packet, float *flt)
+{
+
+   gp_set_data_index(packet, 0);
+   gp_get_float32(packet, flt);
 
    return GP_SUCCESS;
 }
