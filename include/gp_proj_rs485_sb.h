@@ -52,9 +52,9 @@ typedef struct {
 
 
 /* Sensor Types */
-#define RS485_SB_TYPE_PROXIMITY_SONAR
-#define RS485_SB_TYPE_PROXIMITY_VCSEL
-#define RS485_SB_TYPE_PROXIMITY_CAPACITIVE
+#define RS485_SB_TYPE_PROXIMITY_SONAR       0x00
+#define RS485_SB_TYPE_PROXIMITY_VCSEL       0x01
+#define RS485_SB_TYPE_PROXIMITY_CAPACITIVE  0x02
 
 
 uint8_t create_rs485_query_sensor_info(GenericPacket *packet, uint8_t address);

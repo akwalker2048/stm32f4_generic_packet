@@ -32,6 +32,12 @@ uint8_t extract_universal_string(GenericPacket *packet, char *str);
 uint8_t create_universal_word(GenericPacket *packet, uint32_t word);
 uint8_t extract_universal_word(GenericPacket *packet, uint32_t *word);
 
+uint8_t create_universal_chomp(GenericPacket *packet, uint16_t chomp);
+uint8_t extract_universal_chomp(GenericPacket *packet, uint16_t *chomp);
+
+uint8_t create_universal_byte(GenericPacket *packet, uint8_t byte);
+uint8_t extract_universal_byte(GenericPacket *packet, uint8_t *byte);
+
 uint8_t create_universal_float(GenericPacket *packet, float flt);
 uint8_t extract_universal_float(GenericPacket *packet, float *flt);
 

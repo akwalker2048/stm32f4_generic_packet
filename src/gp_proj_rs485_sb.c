@@ -5,6 +5,8 @@ uint8_t create_rs485_query_sensor_info(GenericPacket *packet, uint8_t address)
    gp_reset_packet(packet);
    gp_add_proj(packet, GP_PROJ_RS485_SB, RS485_QUERY_SENSOR_INFO);
    gp_add_uint8(packet, address);
+   /* Test for 4 byte alignment. */
+   gp_add_uint32(packet, 0x00000000);
    gp_add_checksum(packet);
 
    return GP_SUCCESS;

@@ -226,6 +226,59 @@ uint8_t extract_universal_word(GenericPacket *packet, uint32_t *word)
 }
 
 
+uint8_t create_universal_chomp(GenericPacket *packet, uint16_t chomp)
+{
+
+   /*   1.  Reset so we are starting with a fresh packet. */
+   gp_reset_packet(packet);
+   /*   2.  Add header information.  */
+   gp_add_proj(packet, GP_PROJ_UNIVERSAL, UNIVERSAL_CHOMP);
+   /*   3.  Add data of all types. */
+   gp_add_uint16(packet, chomp);
+   /*   4.  Add the checksum so that we are ready to "send". */
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+
+}
+
+uint8_t extract_universal_chomp(GenericPacket *packet, uint16_t *chomp)
+{
+
+   gp_set_data_index(packet, 0);
+   gp_get_uint16(packet, chomp);
+
+   return GP_SUCCESS;
+}
+
+
+uint8_t create_universal_byte(GenericPacket *packet, uint8_t byte)
+{
+
+   /*   1.  Reset so we are starting with a fresh packet. */
+   gp_reset_packet(packet);
+   /*   2.  Add header information.  */
+   gp_add_proj(packet, GP_PROJ_UNIVERSAL, UNIVERSAL_BYTE);
+   /*   3.  Add data of all types. */
+   gp_add_uint8(packet, byte);
+   /*   Just do this to guarantee we cros a 4 byte boundary */
+   gp_add_uint32(packet, 0x00000000);
+   /*   4.  Add the checksum so that we are ready to "send". */
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+
+}
+
+uint8_t extract_universal_byte(GenericPacket *packet, uint8_t *byte)
+{
+
+   gp_set_data_index(packet, 0);
+   gp_get_uint8(packet, byte);
+
+   return GP_SUCCESS;
+}
+
 
 
 uint8_t create_universal_float(GenericPacket *packet, float flt)
