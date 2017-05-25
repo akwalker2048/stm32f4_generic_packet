@@ -70,6 +70,12 @@ typedef struct {
 } GenericPacket;
 
 
+/* ************************************************************* */
+/* * Function Typedef for GenericPacket Callback Handler       * */
+/* ************************************************************* */
+typedef void (*GenericPacketCallack)(GenericPacket *packet);
+
+
 
 /* ************************************************************* */
 /* * Float Conversion Union                                    * */
