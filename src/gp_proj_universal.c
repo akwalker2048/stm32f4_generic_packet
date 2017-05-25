@@ -261,8 +261,6 @@ uint8_t create_universal_byte(GenericPacket *packet, uint8_t byte)
    gp_add_proj(packet, GP_PROJ_UNIVERSAL, UNIVERSAL_BYTE);
    /*   3.  Add data of all types. */
    gp_add_uint8(packet, byte);
-   /*   Just do this to guarantee we cros a 4 byte boundary */
-   gp_add_uint32(packet, 0x00000000);
    /*   4.  Add the checksum so that we are ready to "send". */
    gp_add_checksum(packet);
 

@@ -34,7 +34,8 @@
 #define GP_LOC_NUM_BYTES        3
 #define GP_LOC_CS               4
 #define GP_LOC_DATA_START       5
-#define GP_OVERHEAD_BYTES       5  /* Packet doesn't have to have a Data Byte...so not included in overhead! */
+#define GP_ALIGNMENT_PADDING    4
+#define GP_OVERHEAD_BYTES       (GP_LOC_DATA_START + GP_ALIGNMENT_PADDING)  /* Packet doesn't have to have a Data Byte...so not included in overhead! */
 
 /* ************************************************************* */
 /* * Packet Defines                                            * */

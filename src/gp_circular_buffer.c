@@ -1,12 +1,16 @@
 #include "gp_circular_buffer.h"
 
 /* Initialize the Generic Packet Circular Buffer
- *  Note:  All other functions assume that this was called initially.
+ *  Note:
+ *   +All other functions assume that this was called initially.
+ *   +Trust the caller to make sure gp_array_size is correct for gp_array
  */
-uint8_t gpcb_initialize(GenericPacketCircularBuffer *gpcbs)
+uint8_t gpcb_initialize(GenericPacketCircularBuffer *gpcbs, GenericPacket *gp_array, uint32_t gp_array_size)
 {
    uint8_t retval;
 
+   gpcbs->gpcb = gp_array;
+   gpcbs->gpcb_size = gp_array_size;
    gpcbs->gpcb_head = 0;
    gpcbs->gpcb_head_temp = 0;
    gpcbs->gpcb_tail = 0;
@@ -44,7 +48,7 @@ uint8_t gpcb_increment_temp_head(GenericPacketCircularBuffer *gpcbs)
 
    /* Increment head_temp. */
    gpcbs->gpcb_head_temp++;
-   if(gpcbs->gpcb_head_temp >= GP_CIRC_BUFFER_SIZE)
+   if(gpcbs->gpcb_head_temp >= gpcbs->gpcb_size)
    {
       gpcbs->gpcb_head_temp = 0;
    }
@@ -86,7 +90,7 @@ uint8_t gpcb_increment_tail(GenericPacketCircularBuffer *gpcbs)
    temp_tail = gpcbs->gpcb_tail;
 
    gpcbs->gpcb_tail++;
-   if(gpcbs->gpcb_tail >= GP_CIRC_BUFFER_SIZE)
+   if(gpcbs->gpcb_tail >= gpcbs->gpcb_size)
    {
       gpcbs->gpcb_tail = 0;
    }
