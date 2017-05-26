@@ -73,7 +73,7 @@ typedef struct {
 /* ************************************************************* */
 /* * Function Typedef for GenericPacket Callback Handler       * */
 /* ************************************************************* */
-typedef void (*GenericPacketCallack)(GenericPacket *packet);
+typedef void (*GenericPacketCallback)(GenericPacket *packet);
 
 
 

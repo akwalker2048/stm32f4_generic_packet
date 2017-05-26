@@ -1,3 +1,6 @@
+#ifndef GP_CIRCULAR_BUFFER_H
+#define GP_CIRCULAR_BUFFER_H
+
 #include "generic_packet.h"
 #include "gp_receive.h"
 
@@ -26,3 +29,6 @@ uint8_t gpcb_increment_temp_head(GenericPacketCircularBuffer *gpcbs);
 uint8_t gpcb_increment_head(GenericPacketCircularBuffer *gpcbs);
 uint8_t gpcb_increment_tail(GenericPacketCircularBuffer *gpcbs);
 uint8_t gpcb_receive_byte(uint8_t byte, GenericPacketCircularBuffer *gpcbs);
+
+#endif
+
