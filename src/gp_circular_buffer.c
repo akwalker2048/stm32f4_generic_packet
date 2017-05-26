@@ -86,27 +86,29 @@ uint8_t gpcb_increment_tail(GenericPacketCircularBuffer *gpcbs)
 {
    uint32_t temp_tail;
 
-   /* Store this in the event that we caught the head. */
-   temp_tail = gpcbs->gpcb_tail;
-
-   gpcbs->gpcb_tail++;
-   if(gpcbs->gpcb_tail >= gpcbs->gpcb_size)
-   {
-      gpcbs->gpcb_tail = 0;
-   }
-
-   /* Did we catch the head?  Check here is greater than because we can read the
-    * current head value because we don't increment it until it is ready to
-    * read.  Notify the caller that we need to hang tight until the head is
-    * incremented.
+   /* First check that the tail is not already at the head.
+    *  +We can read the data when tail == head...head isn't
+    *   incremented until it is available.
+    *  +If tail is equal to head when we get here...we have
+    *   already read that data.
     */
-   if(gpcbs->gpcb_tail > gpcbs->gpcb_head)
+   if(gpcbs->gpcb_tail != gpcbs->gpcb_head)
    {
-      gpcbs->gpcb_tail = temp_tail;
+      /* Store this in the event that we caught the head. */
+      temp_tail = gpcbs->gpcb_tail;
+
+      gpcbs->gpcb_tail++;
+      if(gpcbs->gpcb_tail >= gpcbs->gpcb_size)
+      {
+         gpcbs->gpcb_tail = 0;
+      }
+
+      return GP_CIRC_BUFFER_SUCCESS;
+   }
+   else
+   {
       return GP_CIRC_BUFFER_ERROR_TAIL_CAUGHT_HEAD;
    }
-
-   return GP_CIRC_BUFFER_SUCCESS;
 
 }
 

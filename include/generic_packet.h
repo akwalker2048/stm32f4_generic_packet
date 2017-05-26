@@ -35,14 +35,14 @@
 #define GP_LOC_CS               4
 #define GP_LOC_DATA_START       5
 #define GP_ALIGNMENT_PADDING    4
-#define GP_OVERHEAD_BYTES       (GP_LOC_DATA_START + GP_ALIGNMENT_PADDING)  /* Packet doesn't have to have a Data Byte...so not included in overhead! */
+#define GP_OVERHEAD_BYTES       (GP_LOC_DATA_START)  /* Packet doesn't have to have a Data Byte...so not included in overhead! */
 
 /* ************************************************************* */
 /* * Packet Defines                                            * */
 /* ************************************************************* */
 #define GP_START_BYTE          0x1B
 #define GP_MAX_PACKET_LENGTH   0xFF
-#define GP_MAX_PAYLOAD_LENGTH  (GP_MAX_PACKET_LENGTH - GP_OVERHEAD_BYTES)
+#define GP_MAX_PAYLOAD_LENGTH  (GP_MAX_PACKET_LENGTH - (GP_OVERHEAD_BYTES + GP_ALIGNMENT_PADDING))
 
 /* ************************************************************* */
 /* * Receive Packet States and Such                            * */
