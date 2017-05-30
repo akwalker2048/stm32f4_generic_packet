@@ -303,3 +303,44 @@ uint8_t extract_universal_float(GenericPacket *packet, float *flt)
 
    return GP_SUCCESS;
 }
+
+
+uint8_t create_universal_byte_array(GenericPacket *packet, uint8_t *data, uint8_t len)
+{
+   uint8_t ii;
+
+   /*   1.  Reset so we are starting with a fresh packet. */
+   gp_reset_packet(packet);
+   /*   2.  Add header information.  */
+   gp_add_proj(packet, GP_PROJ_UNIVERSAL, UNIVERSAL_BYTE_ARRAY);
+   /*   3.  Add bytes. */
+   for(ii=0; ii<len; ii++)
+   {
+      gp_add_uint8(packet, data[ii]);
+   }
+   /*   4.  Add the checksum so that we are ready to "send". */
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+}
+
+uint8_t extract_universal_byte_array(GenericPacket *packet, uint8_t *data, uint8_t *len)
+{
+   uint8_t ii;
+
+   /* Note:  The variable codever must already be allocated to a size of 256 bytes. */
+   gp_set_data_index(packet, 0);
+   /* How many bites are in the string? */
+   *len = packet->gp[GP_LOC_NUM_BYTES];
+   if(*len > GP_MAX_PAYLOAD_LENGTH)
+   {
+      *len = GP_MAX_PAYLOAD_LENGTH;
+   }
+
+   for(ii=0; ii<*len; ii++)
+   {
+      gp_get_uint8(packet, &(data[ii]));
+   }
+
+   return GP_SUCCESS;
+}

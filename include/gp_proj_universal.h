@@ -13,6 +13,8 @@
 #define UNIVERSAL_WORD        0x06
 #define UNIVERSAL_FLOAT       0x07
 #define UNIVERSAL_CODE_VER    0x08
+#define UNIVERSAL_BYTE_ARRAY  0x09
+
 
 uint8_t create_universal_test_packet(GenericPacket *packet, uint8_t byte, uint16_t chomp, uint32_t word, float fp);
 uint8_t extract_universal_test_packet(GenericPacket *packet, uint8_t *byte, uint16_t *chomp, uint32_t *word, float *fp);
@@ -41,5 +43,7 @@ uint8_t extract_universal_byte(GenericPacket *packet, uint8_t *byte);
 uint8_t create_universal_float(GenericPacket *packet, float flt);
 uint8_t extract_universal_float(GenericPacket *packet, float *flt);
 
+uint8_t create_universal_byte_array(GenericPacket *packet, uint8_t *data, uint8_t len);
+uint8_t extract_universal_byte_array(GenericPacket *packet, uint8_t *data, uint8_t *len);
 
 #endif

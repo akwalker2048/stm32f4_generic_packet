@@ -7,7 +7,7 @@
 #define GP_CIRC_BUFFER_SUCCESS                0x00
 #define GP_CIRC_BUFFER_ERROR_TAIL_CAUGHT_HEAD 0x01
 #define GP_CIRC_BUFFER_ERROR_HEAD_CAUGHT_TAIL 0x02
-#define GP_CIRC_BUFFER_INITIALIZATION_FAILURE  0x03
+#define GP_CIRC_BUFFER_INITIALIZATION_FAILURE 0x03
 
 /* ************************************************************* */
 /* * GenericPacket Circular Buffer Structure                   * */
