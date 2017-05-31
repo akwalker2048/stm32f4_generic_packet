@@ -395,7 +395,7 @@ uint8_t gp_get_float32(GenericPacket *packet, float *fpd)
 /* ************************************************************* */
 uint8_t gp_set_data_index(GenericPacket *packet, uint8_t data_index)
 {
-   if((data_index >= (packet->gp[GP_LOC_NUM_BYTES] - 1)) || (packet->gp[GP_LOC_NUM_BYTES] == 0))
+   if((data_index > (packet->gp[GP_LOC_NUM_BYTES] - 1)) || (packet->gp[GP_LOC_NUM_BYTES] == 0))
    {
       return GP_ERROR_DATA_INDEX_OUT_OF_RANGE;
    }
