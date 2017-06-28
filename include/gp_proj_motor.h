@@ -22,10 +22,32 @@
 #define MOTOR_QUERY_PID       0x08
 #define MOTOR_SET_PID         0x09
 #define MOTOR_RESP_PID        0x0A
-#define MOTOR_START           0x10
-#define MOTOR_STOP            0x11
-#define MOTOR_QUERY_PID_LIMS  0x12
-#define MOTOR_SET_PID_LIMS    0x13
+#define MOTOR_START           0x0B
+#define MOTOR_STOP            0x0C
+#define MOTOR_QUERY_PID_LIMS  0x0D
+#define MOTOR_SET_PID_LIMS    0x0E
+/* TMC260 Commands */
+#define MOTOR_TMC260_SET_DRVCTRL     0x20
+#define MOTOR_TMC260_QUERY_DRVCTRL   0x21
+#define MOTOR_TMC260_RESP_DRVCTRL    0x22
+#define MOTOR_TMC260_SET_CHOPCONF    0x23
+#define MOTOR_TMC260_QUERY_CHOPCONF  0x24
+#define MOTOR_TMC260_RESP_CHOPCONF   0x25
+#define MOTOR_TMC260_SET_SMARTEN     0x26
+#define MOTOR_TMC260_QUERY_SMARTEN   0x27
+#define MOTOR_TMC260_RESP_SMARTEN    0x28
+#define MOTOR_TMC260_SET_DRVCONF     0x29
+#define MOTOR_TMC260_QUERY_DRVCONF   0x2A
+#define MOTOR_TMC260_RESP_DRVCONF    0x2B
+#define MOTOR_TMC260_SET_SGCSCONF    0x2C
+#define MOTOR_TMC260_QUERY_SGCSCONF  0x2D
+#define MOTOR_TMC260_RESP_SGCSCONF   0x2E
+#define MOTOR_TMC260_QUERY_STATUS    0x2F
+#define MOTOR_TMC260_RESP_STATUS     0x30
+/* TILT/Rotate Commands - Used regardless of tilt motor type. */
+#define MOTOR_TILT_HOME  0x40
+#define MOTOR_TILT_START 0x41
+#define MOTOR_TILT_STOP  0x42
 
 
 typedef struct {
@@ -59,6 +81,9 @@ uint8_t extract_motor_start(GenericPacket *packet);
 
 uint8_t create_motor_stop(GenericPacket *packet);
 uint8_t extract_motor_stop(GenericPacket *packet);
+
+uint8_t create_motor_tmc260_resp_status(GenericPacket *packet, uint16_t position, uint16_t stall_guard, uint16_t current, uint8_t status_byte);
+uint8_t extract_motor_tmc260_resp_status(GenericPacket *packet, uint16_t *position, uint16_t *stall_guard, uint16_t *current, uint8_t *status_byte);
 
 #endif
 

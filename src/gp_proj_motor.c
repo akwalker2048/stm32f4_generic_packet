@@ -161,3 +161,29 @@ uint8_t extract_motor_stop(GenericPacket *packet)
 {
    return GP_SUCCESS;
 }
+
+
+uint8_t create_motor_tmc260_resp_status(GenericPacket *packet, uint16_t position, uint16_t stall_guard, uint16_t current, uint8_t status_byte)
+{
+   gp_reset_packet(packet);
+   gp_add_proj(packet, GP_PROJ_MOTOR, MOTOR_TMC260_RESP_STATUS);
+   gp_add_uint16(packet, position);
+   gp_add_uint16(packet, stall_guard);
+   gp_add_uint16(packet, current);
+   gp_add_uint8(packet, status_byte);
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+}
+
+uint8_t extract_motor_tmc260_resp_status(GenericPacket *packet, uint16_t *position, uint16_t *stall_guard, uint16_t *current, uint8_t *status_byte)
+{
+
+   gp_set_data_index(packet, 0);
+   gp_get_uint16(packet, position);
+   gp_get_uint16(packet, stall_guard);
+   gp_get_uint16(packet, current);
+   gp_get_uint8(packet, status_byte);
+
+   return GP_SUCCESS;
+}
