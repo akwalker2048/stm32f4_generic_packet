@@ -82,6 +82,15 @@ uint8_t extract_motor_start(GenericPacket *packet);
 uint8_t create_motor_stop(GenericPacket *packet);
 uint8_t extract_motor_stop(GenericPacket *packet);
 
+
+
+
+
+
+
+uint8_t create_motor_tmc260_query_status(GenericPacket *packet, uint8_t status_type);
+uint8_t extract_motor_tmc260_query_status(GenericPacket *packet);
+
 uint8_t create_motor_tmc260_resp_status(GenericPacket *packet, uint16_t position, uint16_t stall_guard, uint16_t current, uint8_t status_byte);
 uint8_t extract_motor_tmc260_resp_status(GenericPacket *packet, uint16_t *position, uint16_t *stall_guard, uint16_t *current, uint8_t *status_byte);
 
