@@ -736,8 +736,11 @@ uint8_t create_motor_tmc260_query_status(GenericPacket *packet, uint8_t status_t
    return GP_SUCCESS;
 }
 
-uint8_t extract_motor_tmc260_query_status(GenericPacket *packet)
+uint8_t extract_motor_tmc260_query_status(GenericPacket *packet, uint8_t *status_type)
 {
+   gp_set_data_index(packet, 0);
+   gp_get_uint8(packet, status_type);
+
    return GP_SUCCESS;
 }
 
