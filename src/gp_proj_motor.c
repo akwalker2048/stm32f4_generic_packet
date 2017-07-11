@@ -72,6 +72,32 @@ uint8_t extract_motor_resp_position(GenericPacket *packet, float *pos)
 
 }
 
+
+uint8_t create_motor_resp_position_ts(GenericPacket *packet, float pos, uint32_t timestamp)
+{
+
+   gp_reset_packet(packet);
+   gp_add_proj(packet, GP_PROJ_MOTOR, MOTOR_RESP_POSITION_TS);
+   gp_add_float32(packet, pos);
+   gp_add_uint32(packet, timestamp);
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+
+}
+
+uint8_t extract_motor_resp_position_ts(GenericPacket *packet, float *pos, uint32_t *timestamp)
+{
+
+   gp_set_data_index(packet, 0);
+   gp_get_float32(packet, pos);
+   gp_get_uint32(packet, timestamp);
+
+   return GP_SUCCESS;
+
+}
+
+
 uint8_t create_motor_set_pid(GenericPacket *packet, float p, float i, float d)
 {
 

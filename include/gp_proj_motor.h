@@ -11,22 +11,23 @@
  * the host to set individual parameters.  And a packet for the driver to
  * respond with the current setting/value.
  */
-#define MOTOR_COMMAND         0x00
-#define MOTOR_FEEDBACK        0x01
-#define MOTOR_QUERY_POSITION  0x02
-#define MOTOR_SET_POSITION    0x03
-#define MOTOR_RESP_POSITION   0x04
-#define MOTOR_QUERY_VELOCITY  0x05
-#define MOTOR_SET_VELOCITY    0x06
-#define MOTOR_RESP_VELOCITY   0x07
-#define MOTOR_QUERY_PID       0x08
-#define MOTOR_SET_PID         0x09
-#define MOTOR_RESP_PID        0x0A
-#define MOTOR_START           0x0B
-#define MOTOR_STOP            0x0C
-#define MOTOR_QUERY_PID_LIMS  0x0D
-#define MOTOR_SET_PID_LIMS    0x0E
-#define MOTOR_HOME            0x0F
+#define MOTOR_COMMAND          0x00
+#define MOTOR_FEEDBACK         0x01
+#define MOTOR_QUERY_POSITION   0x02
+#define MOTOR_SET_POSITION     0x03
+#define MOTOR_RESP_POSITION    0x04
+#define MOTOR_QUERY_VELOCITY   0x05
+#define MOTOR_SET_VELOCITY     0x06
+#define MOTOR_RESP_VELOCITY    0x07
+#define MOTOR_QUERY_PID        0x08
+#define MOTOR_SET_PID          0x09
+#define MOTOR_RESP_PID         0x0A
+#define MOTOR_START            0x0B
+#define MOTOR_STOP             0x0C
+#define MOTOR_QUERY_PID_LIMS   0x0D
+#define MOTOR_SET_PID_LIMS     0x0E
+#define MOTOR_HOME             0x0F
+#define MOTOR_RESP_POSITION_TS 0x10
 /* TMC260 Commands */
 #define MOTOR_TMC260_SET_DRVCTRL_SDON     0x20
 #define MOTOR_TMC260_QUERY_DRVCTRL_SDON   0x21
@@ -71,6 +72,9 @@ uint8_t extract_motor_feedback(GenericPacket *packet, motor_feedback_t *feedback
 
 uint8_t create_motor_resp_position(GenericPacket *packet, float pos);
 uint8_t extract_motor_resp_position(GenericPacket *packet, float *pos);
+
+uint8_t create_motor_resp_position_ts(GenericPacket *packet, float pos, uint32_t timestamp);
+uint8_t extract_motor_resp_position_ts(GenericPacket *packet, float *pos, uint32_t *timestamp);
 
 uint8_t create_motor_set_pid(GenericPacket *packet, float p, float i, float d);
 uint8_t extract_motor_set_pid(GenericPacket *packet, float *p, float *i, float *d);
