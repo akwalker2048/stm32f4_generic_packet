@@ -26,10 +26,15 @@
 #define MOTOR_STOP            0x0C
 #define MOTOR_QUERY_PID_LIMS  0x0D
 #define MOTOR_SET_PID_LIMS    0x0E
+#define MOTOR_HOME            0x0F
 /* TMC260 Commands */
-#define MOTOR_TMC260_SET_DRVCTRL     0x20
-#define MOTOR_TMC260_QUERY_DRVCTRL   0x21
-#define MOTOR_TMC260_RESP_DRVCTRL    0x22
+#define MOTOR_TMC260_SET_DRVCTRL_SDON     0x20
+#define MOTOR_TMC260_QUERY_DRVCTRL_SDON   0x21
+#define MOTOR_TMC260_RESP_DRVCTRL_SDON    0x22
+/* SDOFF Not currently implemented */
+/* #define MOTOR_TMC260_SET_DRVCTRL_SDOFF */
+/* #define MOTOR_TMC260_QUERY_DRVCTRL_SDOFF */
+/* #define MOTOR_TMC260_RESP_DRVCTRL_SDOFF */
 #define MOTOR_TMC260_SET_CHOPCONF    0x23
 #define MOTOR_TMC260_QUERY_CHOPCONF  0x24
 #define MOTOR_TMC260_RESP_CHOPCONF   0x25
@@ -82,11 +87,56 @@ uint8_t extract_motor_start(GenericPacket *packet);
 uint8_t create_motor_stop(GenericPacket *packet);
 uint8_t extract_motor_stop(GenericPacket *packet);
 
+uint8_t create_motor_home(GenericPacket *packet);
+uint8_t extract_motor_home(GenericPacket *packet);
 
+uint8_t create_motor_set_position(GenericPacket *packet, float rad);
+uint8_t extract_motor_set_position(GenericPacket *packet, float *rad);
 
+uint8_t create_motor_tmc260_set_drvctrl_sdon(GenericPacket *packet, uint8_t intpol, uint8_t dedge, uint8_t mres);
+uint8_t extract_motor_tmc260_set_drvctrl_sdon(GenericPacket *packet, uint8_t *intpol, uint8_t *dedge, uint8_t *mres);
 
+uint8_t create_motor_tmc260_query_drvctrl_sdon(GenericPacket *packet);
+uint8_t extract_motor_tmc260_query_drvctrl_sdon(GenericPacket *packet);
 
+uint8_t create_motor_tmc260_resp_drvctrl_sdon(GenericPacket *packet, uint8_t intpol, uint8_t dedge, uint8_t mres);
+uint8_t extract_motor_tmc260_resp_drvctrl_sdon(GenericPacket *packet, uint8_t *intpol, uint8_t *dedge, uint8_t *mres);
 
+uint8_t create_motor_tmc260_set_chopconf(GenericPacket *packet, uint8_t tbl, uint8_t chm, uint8_t rndtf, uint8_t hdec, uint8_t hend, uint8_t hstrt, uint8_t toff);
+uint8_t extract_motor_tmc260_set_chopconf(GenericPacket *packet, uint8_t *tbl, uint8_t *chm, uint8_t *rndtf, uint8_t *hdec, uint8_t *hend, uint8_t *hstrt, uint8_t *toff);
+
+uint8_t create_motor_tmc260_query_chopconf(GenericPacket *packet);
+uint8_t extract_motor_tmc260_query_chopconf(GenericPacket *packet);
+
+uint8_t create_motor_tmc260_resp_chopconf(GenericPacket *packet, uint8_t tbl, uint8_t chm, uint8_t rndtf, uint8_t hdec, uint8_t hend, uint8_t hstrt, uint8_t toff);
+uint8_t extract_motor_tmc260_resp_chopconf(GenericPacket *packet, uint8_t *tbl, uint8_t *chm, uint8_t *rndtf, uint8_t *hdec, uint8_t *hend, uint8_t *hstrt, uint8_t *toff);
+
+uint8_t create_motor_tmc260_set_smarten(GenericPacket *packet, uint8_t seimin, uint8_t sedn, uint8_t semax, uint8_t seup, uint8_t semin);
+uint8_t extract_motor_tmc260_set_smarten(GenericPacket *packet, uint8_t *seimin, uint8_t *sedn, uint8_t *semax, uint8_t *seup, uint8_t *semin);
+
+uint8_t create_motor_tmc260_query_smarten(GenericPacket *packet);
+uint8_t extract_motor_tmc260_query_smarten(GenericPacket *packet);
+
+uint8_t create_motor_tmc260_resp_smarten(GenericPacket *packet, uint8_t seimin, uint8_t sedn, uint8_t semax, uint8_t seup, uint8_t semin);
+uint8_t extract_motor_tmc260_resp_smarten(GenericPacket *packet, uint8_t *seimin, uint8_t *sedn, uint8_t *semax, uint8_t *seup, uint8_t *semin);
+
+uint8_t create_motor_tmc260_set_drvconf(GenericPacket *packet, uint8_t tst, uint8_t slph, uint8_t slpl, uint8_t diss2g, uint8_t ts2g, uint8_t sdoff, uint8_t vsense, uint8_t rdsel);
+uint8_t extract_motor_tmc260_set_drvconf(GenericPacket *packet, uint8_t *tst, uint8_t *slph, uint8_t *slpl, uint8_t *diss2g, uint8_t *ts2g, uint8_t *sdoff, uint8_t *vsense, uint8_t *rdsel);
+
+uint8_t create_motor_tmc260_query_drvconf(GenericPacket *packet);
+uint8_t extract_motor_tmc260_query_drvconf(GenericPacket *packet);
+
+uint8_t create_motor_tmc260_resp_drvconf(GenericPacket *packet, uint8_t tst, uint8_t slph, uint8_t slpl, uint8_t diss2g, uint8_t ts2g, uint8_t sdoff, uint8_t vsense, uint8_t rdsel);
+uint8_t extract_motor_tmc260_resp_drvconf(GenericPacket *packet, uint8_t *tst, uint8_t *slph, uint8_t *slpl, uint8_t *diss2g, uint8_t *ts2g, uint8_t *sdoff, uint8_t *vsense, uint8_t *rdsel);
+
+uint8_t create_motor_tmc260_set_sgcsconf(GenericPacket *packet, uint8_t sfilt, uint8_t sgt, uint8_t cs);
+uint8_t extract_motor_tmc260_set_sgcsconf(GenericPacket *packet, uint8_t *sfilt, uint8_t *sgt, uint8_t *cs);
+
+uint8_t create_motor_tmc260_query_sgcsconf(GenericPacket *packet);
+uint8_t extract_motor_tmc260_query_sgcsconf(GenericPacket *packet);
+
+uint8_t create_motor_tmc260_resp_sgcsconf(GenericPacket *packet, uint8_t sfilt, uint8_t sgt, uint8_t cs);
+uint8_t extract_motor_tmc260_resp_sgcsconf(GenericPacket *packet, uint8_t *sfilt, uint8_t *sgt, uint8_t *cs);
 
 uint8_t create_motor_tmc260_query_status(GenericPacket *packet, uint8_t status_type);
 uint8_t extract_motor_tmc260_query_status(GenericPacket *packet);
