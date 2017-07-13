@@ -232,6 +232,25 @@ uint8_t extract_motor_set_position(GenericPacket *packet, float *rad)
 }
 
 
+uint8_t create_motor_set_tilt_multiplier(GenericPacket *packet, float multiplier)
+{
+   gp_reset_packet(packet);
+   gp_add_proj(packet, GP_PROJ_MOTOR, MOTOR_SET_TILT_MULTIPLIER);
+   gp_add_float32(packet, multiplier);
+   gp_add_checksum(packet);
+
+   return GP_SUCCESS;
+}
+
+
+uint8_t extract_motor_set_tilt_multiplier(GenericPacket *packet, float *multiplier)
+{
+   gp_set_data_index(packet, 0);
+   gp_get_float32(packet, multiplier);
+
+   return GP_SUCCESS;
+}
+
 
 /* MOTOR_TMC260_SET_DRVCTRL create and extract functions. */
 uint8_t create_motor_tmc260_set_drvctrl_sdon(GenericPacket *packet, uint8_t intpol, uint8_t dedge, uint8_t mres)

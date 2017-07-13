@@ -28,6 +28,9 @@
 #define MOTOR_SET_PID_LIMS     0x0E
 #define MOTOR_HOME             0x0F
 #define MOTOR_RESP_POSITION_TS 0x10
+#define MOTOR_SET_TILT_MULTIPLIER 0x11
+#define MOTOR_QUERY_TILT_MULTIPLIER 0x12
+#define MOTOR_RESP_TILT_MULTIPLIER 0x13
 /* TMC260 Commands */
 #define MOTOR_TMC260_SET_DRVCTRL_SDON     0x20
 #define MOTOR_TMC260_QUERY_DRVCTRL_SDON   0x21
@@ -96,6 +99,9 @@ uint8_t extract_motor_home(GenericPacket *packet);
 
 uint8_t create_motor_set_position(GenericPacket *packet, float rad);
 uint8_t extract_motor_set_position(GenericPacket *packet, float *rad);
+
+uint8_t create_motor_set_tilt_multiplier(GenericPacket *packet, float multiplier);
+uint8_t extract_motor_set_tilt_multiplier(GenericPacket *packet, float *multiplier);
 
 uint8_t create_motor_tmc260_set_drvctrl_sdon(GenericPacket *packet, uint8_t intpol, uint8_t dedge, uint8_t mres);
 uint8_t extract_motor_tmc260_set_drvctrl_sdon(GenericPacket *packet, uint8_t *intpol, uint8_t *dedge, uint8_t *mres);
