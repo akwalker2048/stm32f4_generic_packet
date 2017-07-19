@@ -60,6 +60,11 @@ uint8_t gpcb_increment_temp_head(GenericPacketCircularBuffer *gpcbs)
       gpcbs->gpcb_head_temp = temp_temp_head;
       return GP_CIRC_BUFFER_ERROR_HEAD_CAUGHT_TAIL;
    }
+   else
+   {
+      gp_receive_byte(0x00, GP_CONTROL_INITIALIZE, &(gpcbs->gpcb[gpcbs->gpcb_head_temp]));
+   }
+
 
    return GP_CIRC_BUFFER_SUCCESS;
 
